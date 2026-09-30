@@ -12,6 +12,7 @@ router.get("/product/:productId/summary", reviewController.getProductRatingSumma
 // Protected routes
 router.post("/", AuthenticUser, reviewController.createReview.bind(reviewController));
 router.patch("/:id/vote", AuthenticUser, reviewController.voteReview.bind(reviewController));
+router.post("/:id/vote", AuthenticUser, reviewController.voteReview.bind(reviewController));
 router.delete("/:id", AuthenticUser, reviewController.deleteReview.bind(reviewController));
 router.get("/user/my-reviews", AuthenticUser, reviewController.getMyReviews.bind(reviewController));
 
