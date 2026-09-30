@@ -1,11 +1,12 @@
 const ReviewService = require("../service/review-service");
+const { AppError } = require("../utils/errors/app-error");
 
 class ReviewController {
   constructor() {
     this.reviewService = new ReviewService();
   }
 
-  async createReview(req, res) {
+  async createReview(req, res, next) {
     try {
       const user = req.user;
       const token = req.headers.authorization;
@@ -18,16 +19,11 @@ class ReviewController {
         error: {},
       });
     } catch (error) {
-      return res.status(400).json({
-        success: false,
-        data: {},
-        message: "Failed to submit review",
-        error: error.message,
-      });
+      return next(error);
     }
   }
 
-  async getProductReviews(req, res) {
+  async getProductReviews(req, res, next) {
     try {
       const { productId } = req.params;
       const { page, limit, sortBy } = req.query;
@@ -46,16 +42,11 @@ class ReviewController {
         error: {},
       });
     } catch (error) {
-      return res.status(500).json({
-        success: false,
-        data: [],
-        message: "Failed to retrieve reviews",
-        error: error.message,
-      });
+      return next(error);
     }
   }
 
-  async getProductRatingSummary(req, res) {
+  async getProductRatingSummary(req, res, next) {
     try {
       const { productId } = req.params;
       const summary = await this.reviewService.getProductRatingSummary(productId);
@@ -67,16 +58,11 @@ class ReviewController {
         error: {},
       });
     } catch (error) {
-      return res.status(500).json({
-        success: false,
-        data: {},
-        message: "Failed to retrieve rating summary",
-        error: error.message,
-      });
+      return next(error);
     }
   }
 
-  async voteReview(req, res) {
+  async voteReview(req, res, next) {
     try {
       const { id } = req.params;
       const { voteType } = req.body;
@@ -95,16 +81,11 @@ class ReviewController {
         error: {},
       });
     } catch (error) {
-      return res.status(400).json({
-        success: false,
-        data: {},
-        message: "Failed to record vote",
-        error: error.message,
-      });
+      return next(error);
     }
   }
 
-  async deleteReview(req, res) {
+  async deleteReview(req, res, next) {
     try {
       const { id } = req.params;
       const userId = req.user?.id || req.user?.userId;
@@ -119,16 +100,11 @@ class ReviewController {
         error: {},
       });
     } catch (error) {
-      return res.status(400).json({
-        success: false,
-        data: {},
-        message: "Failed to delete review",
-        error: error.message,
-      });
+      return next(error);
     }
   }
 
-  async getMyReviews(req, res) {
+  async getMyReviews(req, res, next) {
     try {
       const userId = req.user?.id || req.user?.userId;
       const reviews = await this.reviewService.getUserReviews(userId);
@@ -140,12 +116,7 @@ class ReviewController {
         error: {},
       });
     } catch (error) {
-      return res.status(500).json({
-        success: false,
-        data: [],
-        message: "Failed to retrieve user reviews",
-        error: error.message,
-      });
+      return next(error);
     }
   }
 }
